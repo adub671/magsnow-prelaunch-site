@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MagSnow — Scrape & Go | Coming Soon</title>
+  <meta name="description" content="Sign up to get first dibs on MagSnow — the magnetic stomp pad + ice scraper. Launching soon." />
+  <meta property="og:title" content="MagSnow — Scrape & Go" />
+  <meta property="og:description" content="A smarter way to clear ice and ride. Join the waitlist for launch + early perks." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b1020; /* deep slate */
+      --card:#111833; /* card surface */
+      --txt:#e5e7eb; /* text */
+      --muted:#9ca3af; /* muted */
+      --accent:#60a5fa; /* blue */
+      --accent-2:#a78bfa; /* violet */
+      --ok:#34d399; /* green */
+      --err:#f87171; /* red */
+      --ring: rgba(96,165,250,.45);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--txt);
+      background: radial-gradient(1200px 800px at 20% 10%, rgba(96,165,250,.18), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 90%, rgba(167,139,250,.15), transparent 55%),
+                  var(--bg);
+      display:grid; place-items:center; padding:24px;
+    }
+    .wrap{max-width:900px; width:100%;}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:24px; padding:32px;
+      box-shadow:0 10px 40px rgba(0,0,0,.35);
+      backdrop-filter:saturate(150%) blur(6px);
+    }
+    header{display:flex; gap:16px; align-items:center;}
+    .logo{
+      width:54px; height:54px; border-radius:14px;
+      background: conic-gradient(from 180deg, var(--accent), var(--accent-2));
+      display:grid; place-items:center; font-weight:800; font-size:20px;
+      color:#0b1020; letter-spacing:.5px;
+      border:1px solid rgba(255,255,255,.15);
+      box-shadow: inset 0 0 20px rgba(255,255,255,.35), 0 8px 24px rgba(96,165,250,.25);
+    }
+    h1{margin:0; font-size:clamp(28px, 4.5vw, 44px); line-height:1.15}
+    .sub{margin:8px 0 0; color:var(--muted)}
+    .grid{display:grid; grid-template-columns:1.5fr 1fr; gap:28px; margin-top:28px}
+    @media (max-width:860px){ .grid{grid-template-columns:1fr} }
+    .cta{
+      background:var(--card); border:1px solid rgba(255,255,255,.06);
+      border-radius:18px; padding:20px;
+    }
+    label{display:block; font-weight:600; margin:10px 0 8px}
+    input[type=email]{
+      width:100%; padding:14px 16px; border-radius:12px;
+      border:1px solid rgba(148,163,184,.35);
+      background:#0a0f21; color:var(--txt); font-size:16px;
+      outline:none; transition:border-color .15s, box-shadow .15s;
+    }
+    input[type=email]:focus{ border-color:var(--accent); box-shadow:0 0 0 6px var(--ring); }
+    .row{display:flex; gap:12px; margin-top:14px}
+    button{
+      appearance:none; border:0; cursor:pointer;
+      padding:14px 18px; border-radius:12px; font-weight:700; font-size:16px;
+      background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b1020;
+      box-shadow:0 8px 24px rgba(96,165,250,.35);
+      transition: transform .06s ease, filter .2s ease;
+    }
+    button:active{ transform: translateY(1px) }
+    .small{font-size:12px; color:var(--muted); margin-top:10px}
+    .note{font-size:14px; color:var(--muted)}
+    .status{margin-top:14px; font-weight:600}
+    .status.ok{color:var(--ok)}
+    .status.err{color:var(--err)}
+    .illus{
+      background: radial-gradient(400px 220px at 65% 20%, rgba(96,165,250,.15), transparent 60%), var(--card);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:18px; padding:20px; display:grid; place-items:center; text-align:center
+    }
+    .hero{ font-size: clamp(18px, 3.5vw, 22px); font-weight:700; letter-spacing:.2px; }
+    .list{ margin-top:12px; text-align:left; color:var(--muted); font-size:14px }
+    .list li{ margin:6px 0 }
+    .hp{position:absolute; left:-9999px}
+    footer{margin-top:18px; display:flex; justify-content:space-between; gap:10px; align-items:center; color:var(--muted); font-size:12px}
+    footer a{color:var(--txt); opacity:.8}
+    .brand{font-weight:700; letter-spacing:.2px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="logo" aria-hidden="true">MS</div>
+        <div>
+          <h1>MagSnow — Scrape &amp; Go</h1>
+          <p class="sub">Magnetic stomp pad + ice scraper. Smarter starts on snow. Be first to know when we drop.</p>
+        </div>
+      </header>
+
+      <div class="grid">
+        <!-- SIGNUP CARD -->
+        <section class="cta">
+          <form id="signup" method="POST" action="https://formspree.io/f/XXXXYYYY" novalidate>
+            <!-- Replace the action URL above with your provider's endpoint. See notes below. -->
+            <label for="email">Get on the list</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+            <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" />
+            <div class="row">
+              <button type="submit">Notify me</button>
+              <span class="note">Early birds get launch perks + discounts.</span>
+            </div>
+            <div id="status" class="status" role="status" aria-live="polite"></div>
+            <p class="small">By subscribing, you agree to receive emails from MagSnow. Unsubscribe anytime.</p>
+          </form>
+        </section>
+
+        <!-- ILLUSTRATION / COPY -->
+        <aside class="illus">
+          <div>
+            <div class="hero">Scrape. Snap. Go ride.</div>
+            <ul class="list">
+              <li>Magnetic stomp pad keeps the scraper right where you need it</li>
+              <li>Designed for glove-on grip &amp; quick ice removal</li>
+              <li>Winter ’25 launch — limited first run</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+
+      <footer>
+        <div class="brand">© <span id="year"></span> MagSnow</div>
+        <div>
+          <a href="#" aria-label="Privacy">Privacy</a>
+          ·
+          <a href="#" aria-label="Terms">Terms</a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Update year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const form = document.getElementById('signup');
+    const email = document.getElementById('email');
+    const statusEl = document.getElementById('status');
+
+    function setStatus(msg, ok){
+      statusEl.textContent = msg;
+      statusEl.className = 'status ' + (ok ? 'ok' : 'err');
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setStatus('', true);
+
+      // very light client-side validation
+      const v = email.value.trim();
+      const re = /.+@.+\..+/;
+      if(!re.test(v)){
+        setStatus('Please enter a valid email.', false);
+        email.focus();
+        return;
+      }
+
+      // honeypot trap (basic spam reduction)
+      if(form.company && form.company.value){
+        setStatus('Hmm, something went wrong. Please try again.', false);
+        return;
+      }
+
+      const fd = new FormData(form);
+
+      try {
+        const resp = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: fd
+        });
+
+        if(resp.ok){
+          setStatus('You\'re on the list! Check your inbox for a confirmation.', true);
+          form.reset();
+        } else {
+          const data = await resp.json().catch(()=>null);
+          const msg = data && data.error ? data.error : 'Could not subscribe. Please try again later.';
+          setStatus(msg, false);
+        }
+      } catch(err){
+        setStatus('Network error. Please try again.', false);
+      }
+    });
+  </script>
+</body>
+</html>

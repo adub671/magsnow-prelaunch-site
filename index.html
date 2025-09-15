@@ -4,200 +4,196 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MagSnow — Scrape & Go | Coming Soon</title>
-  <meta name="description" content="Sign up to get first dibs on MagSnow — the magnetic stomp pad + ice scraper. Launching soon." />
-  <meta property="og:title" content="MagSnow — Scrape & Go" />
-  <meta property="og:description" content="A smarter way to clear ice and ride. Join the waitlist for launch + early perks." />
-  <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="Sign up for the MagSnow Scrape & Go launch list — a magnetic stomp pad + ice scraper." />
+  <meta name="theme-color" content="#000000" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0b1020; /* deep slate */
-      --card:#111833; /* card surface */
-      --txt:#e5e7eb; /* text */
-      --muted:#9ca3af; /* muted */
-      --accent:#60a5fa; /* blue */
-      --accent-2:#a78bfa; /* violet */
-      --ok:#34d399; /* green */
-      --err:#f87171; /* red */
-      --ring: rgba(96,165,250,.45);
+      --bg:#000; --txt:#fff; --muted:#b4b4b4; --line:rgba(255,255,255,.25);
+      --glow:#ffffff; --accent:#ffffff; --ok:#38ef7d; --err:#ff4d4d;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-      color:var(--txt);
-      background: radial-gradient(1200px 800px at 20% 10%, rgba(96,165,250,.18), transparent 60%),
-                  radial-gradient(1000px 700px at 80% 90%, rgba(167,139,250,.15), transparent 55%),
-                  var(--bg);
-      display:grid; place-items:center; padding:24px;
-    }
-    .wrap{max-width:900px; width:100%;}
+    body{ margin:0; background:var(--bg); color:var(--txt); overflow:hidden; }
+
+    /* ===== BACKGROUND: magnetic field lines ===== */
+    .bg-wrap{position:fixed; inset:0; overflow:hidden;}
+    svg.field{position:absolute; inset:0; width:100%; height:100%;}
+    .field path{fill:none; stroke:var(--line); stroke-width:1.25; stroke-linecap:round;
+      stroke-dasharray:4 10; animation: dash 6s linear infinite;}
+    .field path:nth-child(odd){opacity:.6; animation-duration:9s}
+    .field path:nth-child(3n){opacity:.35; animation-duration:12s}
+    @keyframes dash{ to { stroke-dashoffset:-500; } }
+
+    /* Subtle noise + scanlines for texture */
+    .grain{position:absolute; inset:-10%; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 0 0 0 0 0 0.06 0"/></feComponentTransfer></filter><rect width="100%" height="100%" filter="url(%23n)"/></svg>'); opacity:.08; mix-blend-mode:screen; animation: drift 30s linear infinite;}
+    @keyframes drift{ 50%{transform:translate3d(2%,2%,0)} }
+    .scanlines{position:absolute; inset:0; background: repeating-linear-gradient(to bottom, rgba(255,255,255,.04), rgba(255,255,255,.04) 1px, transparent 2px, transparent 4px); opacity:.07;}
+
+    /* ===== CENTER CARD ===== */
+    .wrap{position:relative; z-index:2; height:100%; display:grid; place-items:center; padding:24px}
     .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:24px; padding:32px;
-      box-shadow:0 10px 40px rgba(0,0,0,.35);
-      backdrop-filter:saturate(150%) blur(6px);
+      width:min(820px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:28px; padding:36px clamp(22px, 3vw, 44px);
+      box-shadow: 0 10px 40px rgba(0,0,0,.6), 0 0 80px rgba(255,255,255,.08) inset;
+      backdrop-filter: blur(8px) saturate(120%);
+      position:relative;
+      overflow:hidden;
     }
-    header{display:flex; gap:16px; align-items:center;}
+    /* Dynamic rim glow */
+    .card::before{content:""; position:absolute; inset:-2px; border-radius:30px;
+      padding:2px; background: conic-gradient(from var(--ang,0deg), rgba(255,255,255,.0), rgba(255,255,255,.65), rgba(255,255,255,.0) 45%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; animation: spin 14s linear infinite; opacity:.35;}
+    @keyframes spin{ to{ --ang:360deg } }
+
+    header{display:flex; gap:18px; align-items:center; flex-wrap:wrap}
     .logo{
-      width:54px; height:54px; border-radius:14px;
-      background: conic-gradient(from 180deg, var(--accent), var(--accent-2));
-      display:grid; place-items:center; font-weight:800; font-size:20px;
-      color:#0b1020; letter-spacing:.5px;
-      border:1px solid rgba(255,255,255,.15);
-      box-shadow: inset 0 0 20px rgba(255,255,255,.35), 0 8px 24px rgba(96,165,250,.25);
+      width:64px; height:64px; border-radius:16px; display:grid; place-items:center;
+      background: radial-gradient(120px 80px at 30% 30%, #fff 0%, rgba(255,255,255,.2) 35%, transparent 60%), #000;
+      position:relative; border:1px solid rgba(255,255,255,.25);
+      box-shadow: inset 0 0 30px rgba(255,255,255,.35), 0 10px 30px rgba(255,255,255,.1);
+      font: 800 18px Orbitron, system-ui; letter-spacing:1px; color:#000;
     }
-    h1{margin:0; font-size:clamp(28px, 4.5vw, 44px); line-height:1.15}
-    .sub{margin:8px 0 0; color:var(--muted)}
-    .grid{display:grid; grid-template-columns:1.5fr 1fr; gap:28px; margin-top:28px}
+    .logo::after{ content:""; width:38px; height:18px; border:3px solid #000; border-top:0; background:#fff; border-radius:3px 3px 10px 10px; position:absolute;}
+    h1{font:800 clamp(26px,6vw,46px) Orbitron, system-ui; letter-spacing:.06em; margin:0}
+    .sub{margin:.35rem 0 0; color:var(--muted); font:600 14px/1.5 Inter,system-ui}
+
+    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:28px; margin-top:28px}
     @media (max-width:860px){ .grid{grid-template-columns:1fr} }
-    .cta{
-      background:var(--card); border:1px solid rgba(255,255,255,.06);
-      border-radius:18px; padding:20px;
+
+    .cta{background: rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.18); border-radius:18px; padding:20px}
+    label{display:block; font:700 13px Inter,system-ui; letter-spacing:.08em; text-transform:uppercase; color:#eaeaea; margin-bottom:10px}
+    .input{
+      display:flex; gap:10px; align-items:stretch; position:relative;
+      border-radius:14px; padding:6px; background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.05);
     }
-    label{display:block; font-weight:600; margin:10px 0 8px}
     input[type=email]{
-      width:100%; padding:14px 16px; border-radius:12px;
-      border:1px solid rgba(148,163,184,.35);
-      background:#0a0f21; color:var(--txt); font-size:16px;
-      outline:none; transition:border-color .15s, box-shadow .15s;
+      flex:1; padding:14px 14px; border-radius:10px; border:0; background:transparent; color:var(--txt);
+      font: 600 16px Inter,system-ui; outline:none;
     }
-    input[type=email]:focus{ border-color:var(--accent); box-shadow:0 0 0 6px var(--ring); }
-    .row{display:flex; gap:12px; margin-top:14px}
-    button{
-      appearance:none; border:0; cursor:pointer;
-      padding:14px 18px; border-radius:12px; font-weight:700; font-size:16px;
-      background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b1020;
-      box-shadow:0 8px 24px rgba(96,165,250,.35);
-      transition: transform .06s ease, filter .2s ease;
+    .hp{position:absolute; left:-9999px}
+    .btn{
+      position:relative; border:0; cursor:pointer; border-radius:12px; padding:0 18px; display:grid; place-items:center;
+      font:800 14px Orbitron,system-ui; letter-spacing:.12em; text-transform:uppercase; color:#000;
+      background: radial-gradient(circle at var(--x,50%) var(--y,50%), #fff 0%, #acacac 45%, #888 70%);
+      transition: transform .06s ease; min-width:150px;
+      box-shadow: 0 8px 22px rgba(255,255,255,.18), inset 0 -6px 12px rgba(0,0,0,.35);
     }
-    button:active{ transform: translateY(1px) }
-    .small{font-size:12px; color:var(--muted); margin-top:10px}
-    .note{font-size:14px; color:var(--muted)}
-    .status{margin-top:14px; font-weight:600}
+    .btn:active{ transform: translateY(1px) }
+
+    .status{margin-top:12px; font:600 13px Inter;}
     .status.ok{color:var(--ok)}
     .status.err{color:var(--err)}
-    .illus{
-      background: radial-gradient(400px 220px at 65% 20%, rgba(96,165,250,.15), transparent 60%), var(--card);
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:18px; padding:20px; display:grid; place-items:center; text-align:center
-    }
-    .hero{ font-size: clamp(18px, 3.5vw, 22px); font-weight:700; letter-spacing:.2px; }
-    .list{ margin-top:12px; text-align:left; color:var(--muted); font-size:14px }
-    .list li{ margin:6px 0 }
-    .hp{position:absolute; left:-9999px}
-    footer{margin-top:18px; display:flex; justify-content:space-between; gap:10px; align-items:center; color:var(--muted); font-size:12px}
-    footer a{color:var(--txt); opacity:.8}
-    .brand{font-weight:700; letter-spacing:.2px}
+
+    .aside{ position:relative; background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18); border-radius:18px; padding:20px; overflow:hidden }
+    .aside h3{ margin:0 0 8px; font:800 18px Orbitron }
+    .bul{ margin:0; padding-left:18px; color:var(--muted); font:600 14px/1.6 Inter }
+
+    footer{margin-top:18px; color:#9a9a9a; font:600 12px Inter; display:flex; justify-content:space-between}
+
+    /* Magnetic ripple around button on hover */
+    .btn::after{ content:""; position:absolute; inset:-2px; border-radius:inherit; border:1px solid rgba(255,255,255,.55); filter: blur(6px); opacity:.0; transition:opacity .2s }
+    .btn:hover::after{ opacity:.7 }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
+  <div class="bg-wrap" aria-hidden="true">
+    <!-- SVG magnetic field generator: two poles imply curved lines -->
+    <svg class="field" viewBox="0 0 1200 800" preserveAspectRatio="none">
+      <!-- left pole fan -->
+      <path d="M100,400 C200,180 380,120 600,120"/>
+      <path d="M100,400 C230,240 420,220 650,220"/>
+      <path d="M100,400 C260,320 460,340 700,340"/>
+      <path d="M100,400 C260,480 460,460 700,460"/>
+      <path d="M100,400 C230,560 420,580 650,580"/>
+      <path d="M100,400 C200,620 380,680 600,680"/>
+      <!-- right pole fan -->
+      <path d="M1100,400 C1000,180 820,120 600,120"/>
+      <path d="M1100,400 C970,240 780,220 550,220"/>
+      <path d="M1100,400 C940,320 740,340 500,340"/>
+      <path d="M1100,400 C940,480 740,460 500,460"/>
+      <path d="M1100,400 C970,560 780,580 550,580"/>
+      <path d="M1100,400 C1000,620 820,680 600,680"/>
+    </svg>
+    <div class="grain"></div>
+    <div class="scanlines"></div>
+  </div>
+
+  <main class="wrap">
+    <section class="card">
       <header>
         <div class="logo" aria-hidden="true">MS</div>
         <div>
           <h1>MagSnow — Scrape &amp; Go</h1>
-          <p class="sub">Magnetic stomp pad + ice scraper. Smarter starts on snow. Be first to know when we drop.</p>
+          <p class="sub">Magnetic stomp pad + ice scraper. Ultra-fast ice clear, zero faff. Join the first drop list.</p>
         </div>
       </header>
 
       <div class="grid">
-        <!-- SIGNUP CARD -->
         <section class="cta">
+          <label for="email">Get early access</label>
           <form id="signup" method="POST" action="https://formspree.io/f/XXXXYYYY" novalidate>
-            <!-- Replace the action URL above with your provider's endpoint. See notes below. -->
-            <label for="email">Get on the list</label>
-            <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
-            <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" />
-            <div class="row">
-              <button type="submit">Notify me</button>
-              <span class="note">Early birds get launch perks + discounts.</span>
+            <div class="input">
+              <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required />
+              <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" />
+              <button class="btn" type="submit" id="notify">Notify me</button>
             </div>
             <div id="status" class="status" role="status" aria-live="polite"></div>
-            <p class="small">By subscribing, you agree to receive emails from MagSnow. Unsubscribe anytime.</p>
           </form>
         </section>
 
-        <!-- ILLUSTRATION / COPY -->
-        <aside class="illus">
-          <div>
-            <div class="hero">Scrape. Snap. Go ride.</div>
-            <ul class="list">
-              <li>Magnetic stomp pad keeps the scraper right where you need it</li>
-              <li>Designed for glove-on grip &amp; quick ice removal</li>
-              <li>Winter ’25 launch — limited first run</li>
-            </ul>
-          </div>
+        <aside class="aside">
+          <h3>Why it slaps</h3>
+          <ul class="bul">
+            <li>Magnetic docking — scraper snaps to the stomp pad</li>
+            <li>Glove-on grip &amp; fast ice break geometry</li>
+            <li>Limited first run · Winter ’25</li>
+          </ul>
         </aside>
       </div>
 
       <footer>
-        <div class="brand">© <span id="year"></span> MagSnow</div>
-        <div>
-          <a href="#" aria-label="Privacy">Privacy</a>
-          ·
-          <a href="#" aria-label="Terms">Terms</a>
-        </div>
+        <span>© <span id="year"></span> MagSnow</span>
+        <span>Privacy · Terms</span>
       </footer>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script>
-    // Update year
+    // Dynamic year
     document.getElementById('year').textContent = new Date().getFullYear();
 
+    // Magnetic hover for the button
+    const btn = document.getElementById('notify');
+    btn.addEventListener('mousemove', (e)=>{
+      const r = btn.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width * 100).toFixed(2) + '%';
+      const y = ((e.clientY - r.top) / r.height * 100).toFixed(2) + '%';
+      btn.style.setProperty('--x', x); btn.style.setProperty('--y', y);
+    });
+
+    // Form handling
     const form = document.getElementById('signup');
     const email = document.getElementById('email');
     const statusEl = document.getElementById('status');
-
-    function setStatus(msg, ok){
-      statusEl.textContent = msg;
-      statusEl.className = 'status ' + (ok ? 'ok' : 'err');
-    }
+    function setStatus(msg, ok){ statusEl.textContent = msg; statusEl.className = 'status ' + (ok ? 'ok' : 'err'); }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      setStatus('', true);
-
-      // very light client-side validation
       const v = email.value.trim();
       const re = /.+@.+\..+/;
-      if(!re.test(v)){
-        setStatus('Please enter a valid email.', false);
-        email.focus();
-        return;
-      }
-
-      // honeypot trap (basic spam reduction)
-      if(form.company && form.company.value){
-        setStatus('Hmm, something went wrong. Please try again.', false);
-        return;
-      }
-
-      const fd = new FormData(form);
-
-      try {
-        const resp = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: fd
-        });
-
-        if(resp.ok){
-          setStatus('You\'re on the list! Check your inbox for a confirmation.', true);
-          form.reset();
-        } else {
-          const data = await resp.json().catch(()=>null);
-          const msg = data && data.error ? data.error : 'Could not subscribe. Please try again later.';
-          setStatus(msg, false);
-        }
-      } catch(err){
-        setStatus('Network error. Please try again.', false);
-      }
+      if(!re.test(v)){ setStatus('Please enter a valid email.', false); email.focus(); return; }
+      if(form.company && form.company.value){ setStatus('Hmm, try again.', false); return; }
+      try{
+        const resp = await fetch(form.action, { method:'POST', headers:{'Accept':'application/json'}, body:new FormData(form) });
+        if(resp.ok){ setStatus("You're on the list! Check your inbox for confirmation.", true); form.reset(); }
+        else { const data = await resp.json().catch(()=>null); setStatus(data?.error || 'Could not subscribe. Please try later.', false); }
+      }catch(err){ setStatus('Network error. Please try again.', false); }
     });
   </script>
 </body>

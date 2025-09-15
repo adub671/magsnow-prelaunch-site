@@ -12,7 +12,7 @@
     :root{ --bg:#000; --txt:#fff; --muted:#b4b4b4; --line:rgba(255,255,255,.25); --ok:#38ef7d; --err:#ff4d4d; --frost:#e0f7ff; }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{ margin:0; background:var(--bg); color:var(--txt); overflow:hidden; font-family:Inter, sans-serif; cursor:none; }
+    body{ margin:0; background:var(--bg); color:var(--txt); overflow:hidden; font-family:Inter, sans-serif; }
 
     /* ===== BACKGROUND ===== */
     .bg-wrap{position:fixed; inset:0; overflow:hidden;}
@@ -81,21 +81,6 @@
     .aside h3::after{ transform: translateX(1px); color:#bdeaff; opacity:.6; }
 
     footer{margin-top:18px; color:#9a9a9a; font:600 12px Inter; display:flex; justify-content:space-between}
-
-    /* ===== Custom Cursor: Rotating Snowflake with Arrow ===== */
-    #snow-cursor{position:fixed; top:0; left:0; width:34px; height:34px; transform:translate(-50%,-50%); pointer-events:none; z-index:9999; filter: drop-shadow(0 0 6px rgba(255,255,255,.35));}
-    #snow-cursor .flake{transform-origin:50% 50%; animation: flakeSpin 8s linear infinite;}
-    #snow-cursor.hot .flake{ animation-duration: 2.2s }
-    #snow-cursor .arrow{ transform-origin:2px 2px; }
-    @keyframes flakeSpin{ to{ transform: rotate(360deg) } }
-
-    /* Accessibility: reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      .field path, .field line, .field circle { animation: none }
-      .grain { animation: none }
-      .btn, .btn:hover { animation: none }
-      #snow-cursor .flake{ animation: none }
-    }
   </style>
 </head>
 <body>
@@ -165,32 +150,9 @@
     </section>
   </main>
 
-  <!-- Rotating snowflake cursor -->
-  <svg id="snow-cursor" width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
-    <!-- arrow pointer (tiny triangle) -->
-    <polygon class="arrow" points="2,2 10,5 5,10" fill="#fff" opacity="0.95" />
-    <!-- snowflake -->
-    <g class="flake" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9">
-      <circle cx="17" cy="17" r="2.2" />
-      <!-- 6 branches -->
-      <g>
-        <line x1="17" y1="5" x2="17" y2="12"/>
-        <line x1="17" y1="22" x2="17" y2="29"/>
-        <line x1="5" y1="17" x2="12" y2="17"/>
-        <line x1="22" y1="17" x2="29" y2="17"/>
-        <line x1="8.5" y1="8.5" x2="13" y2="13"/>
-        <line x1="21" y1="21" x2="25.5" y2="25.5"/>
-        <line x1="25.5" y1="8.5" x2="21" y2="13"/>
-        <line x1="13" y1="21" x2="8.5" y2="25.5"/>
-      </g>
-    </g>
-  </svg>
-
   <script>
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Button light tracking
     const btn = document.getElementById('notify');
     btn.addEventListener('mousemove', (e)=>{
       const r = btn.getBoundingClientRect();
@@ -199,7 +161,6 @@
       btn.style.setProperty('--x', x); btn.style.setProperty('--y', y);
     });
 
-    // Form handling
     const form = document.getElementById('signup');
     const email = document.getElementById('email');
     const statusEl = document.getElementById('status');
@@ -209,44 +170,4 @@
       e.preventDefault();
       const v = email.value.trim();
       const re = /.+@.+\..+/;
-      if(!re.test(v)){ setStatus('Please enter a valid email.', false); email.focus(); return; }
-      if(form.company && form.company.value){ setStatus('Hmm, try again.', false); return; }
-      try{
-        const resp = await fetch(form.action, { method:'POST', headers:{'Accept':'application/json'}, body:new FormData(form) });
-        if(resp.ok){ setStatus("You're on the list! Watch your inbox soon.", true); form.reset(); }
-        else { const data = await resp.json().catch(()=>null); setStatus(data?.error || 'Could not subscribe. Please try later.', false); }
-      }catch(err){ setStatus('Network error. Please try again.', false); }
-    });
-
-    // ===== Rotating Snowflake Cursor =====
-    (function(){
-      const cursor = document.getElementById('snow-cursor');
-      let x=window.innerWidth/2, y=window.innerHeight/2, tx=x, ty=y;
-
-      // Smooth follow
-      function loop(){
-        x += (tx - x) * 0.18; y += (ty - y) * 0.18;
-        cursor.style.left = x + 'px';
-        cursor.style.top  = y + 'px';
-        requestAnimationFrame(loop);
-      }
-      loop();
-
-      // Track mouse
-      window.addEventListener('mousemove', (e)=>{ tx = e.clientX; ty = e.clientY; });
-
-      // Speed up spin when hovering interactive elements
-      const hotOn = ()=> cursor.classList.add('hot');
-      const hotOff = ()=> cursor.classList.remove('hot');
-      document.querySelectorAll('button, input, a, .card').forEach(el=>{
-        el.addEventListener('mouseenter', hotOn);
-        el.addEventListener('mouseleave', hotOff);
-      });
-
-      // Hide when leaving window
-      window.addEventListener('mouseout', ()=>{ cursor.style.opacity = '0'; });
-      window.addEventListener('mouseover', ()=>{ cursor.style.opacity = '1'; });
-    })();
-  </script>
-</body>
-</html>
+      if(!re

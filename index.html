@@ -9,12 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root{ --bg:#000; --txt:#fff; --muted:#b4b4b4; --line:rgba(255,255,255,.25); --ok:#38ef7d; --err:#ff4d4d; }
+    :root{ --bg:#000; --txt:#fff; --muted:#b4b4b4; --line:rgba(255,255,255,.25); --ok:#38ef7d; --err:#ff4d4d; --frost:#e0f7ff; }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{ margin:0; background:var(--bg); color:var(--txt); overflow:hidden; }
 
-    /* ===== BACKGROUND: magnetic field + scanlines ===== */
     .bg-wrap{position:fixed; inset:0; overflow:hidden;}
     svg.field{position:absolute; inset:0; width:100%; height:100%;}
     .field path, .field line, .field circle{fill:none; stroke:var(--line); stroke-width:1.15; stroke-linecap:round; stroke-dasharray:3 8; animation: dash 7s linear infinite;}
@@ -26,7 +25,6 @@
     @keyframes drift{ 50%{transform:translate3d(2%,2%,0)} }
     .scanlines{position:absolute; inset:0; background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.05) 0 1px, transparent 2px 6px); opacity:.06; mix-blend-mode:screen;}
 
-    /* ===== CENTER CARD ===== */
     .wrap{position:relative; z-index:2; height:100%; display:grid; place-items:center; padding:24px}
     .card{ width:min(820px, 92vw); background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.18); border-radius:28px; padding:36px clamp(22px, 3vw, 44px); box-shadow: 0 10px 40px rgba(0,0,0,.6), 0 0 80px rgba(255,255,255,.08) inset; backdrop-filter: blur(8px) saturate(120%); position:relative; overflow:hidden; }
     .card::before{content:""; position:absolute; inset:-2px; border-radius:30px; padding:2px; background: conic-gradient(from var(--ang,0deg), rgba(255,255,255,.0), rgba(255,255,255,.65), rgba(255,255,255,.0) 45%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: spin 14s linear infinite; opacity:.35;}
@@ -49,12 +47,13 @@
     .btn{ position:relative; border:0; cursor:pointer; border-radius:12px; padding:0 18px; display:grid; place-items:center; font:800 14px Orbitron,system-ui; letter-spacing:.12em; text-transform:uppercase; color:#000; background: radial-gradient(circle at var(--x,50%) var(--y,50%), #fff 0%, #acacac 45%, #888 70%); transition: transform .06s ease; min-width:150px; box-shadow: 0 8px 22px rgba(255,255,255,.18), inset 0 -6px 12px rgba(0,0,0,.35); }
     .btn:active{ transform: translateY(1px) }
 
-    .status{margin-top:12px; font:600 13px Inter;}
-    .status.ok{color:var(--ok)}
-    .status.err{color:var(--err)}
+    .status{margin-top:12px; font:600 14px Inter; padding:12px; border-radius:12px; text-align:center; display:none}
+    .status.ok{color:var(--ok); background:rgba(56,239,125,.08); border:1px solid rgba(56,239,125,.3); display:block; animation:fadeIn .6s ease}
+    .status.err{color:var(--err); background:rgba(255,77,77,.08); border:1px solid rgba(255,77,77,.3); display:block; animation:fadeIn .6s ease}
+    @keyframes fadeIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:translateY(0)}}
 
-    .aside{ position:relative; background: rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.18); border-radius:18px; padding:20px; overflow:hidden }
-    .bul{ margin:0; padding-left:18px; color:var(--muted); font:600 14px/1.6 Inter }
+    .aside{ position:relative; background: linear-gradient(180deg, rgba(224,247,255,.12), rgba(255,255,255,.02)); border:1px solid rgba(224,247,255,.25); border-radius:18px; padding:40px; text-align:center; }
+    .aside h3{ margin:0; font:800 22px Orbitron; color:var(--frost); text-shadow:0 0 10px rgba(224,247,255,.7); letter-spacing:.08em }
 
     footer{margin-top:18px; color:#9a9a9a; font:600 12px Inter; display:flex; justify-content:space-between}
 
@@ -64,55 +63,27 @@
 </head>
 <body>
   <div class="bg-wrap" aria-hidden="true">
-    <!-- Increased density: dual-pole fans + concentric pulses + rays -->
     <svg class="field" viewBox="0 0 1200 800" preserveAspectRatio="none">
+      <!-- multiple radiating lines & circles -->
       <g class="layer-1">
-        <!-- left pole fan -->
-        <path d="M80,400 C200,120 360,80 600,80"/>
-        <path d="M80,400 C230,200 420,180 680,180"/>
-        <path d="M80,400 C260,300 460,320 720,320"/>
-        <path d="M80,400 C260,500 460,480 720,480"/>
-        <path d="M80,400 C230,600 420,620 680,620"/>
-        <path d="M80,400 C200,680 360,720 600,720"/>
-        <!-- right pole fan -->
-        <path d="M1120,400 C1000,120 840,80 600,80"/>
-        <path d="M1120,400 C970,200 780,180 520,180"/>
-        <path d="M1120,400 C940,300 740,320 480,320"/>
-        <path d="M1120,400 C940,500 740,480 480,480"/>
-        <path d="M1120,400 C970,600 780,620 520,620"/>
-        <path d="M1120,400 C1000,680 840,720 600,720"/>
-      </g>
-      <g class="layer-2">
-        <!-- extra curvature density -->
-        <path d="M60,400 C220,160 400,120 640,120"/>
-        <path d="M60,400 C240,260 460,240 700,240"/>
-        <path d="M60,400 C260,360 480,360 740,360"/>
-        <path d="M60,400 C240,540 460,520 700,520"/>
-        <path d="M60,400 C220,640 400,680 640,680"/>
-        <path d="M1140,400 C980,160 800,120 560,120"/>
-        <path d="M1140,400 C960,260 740,240 500,240"/>
-        <path d="M1140,400 C940,360 720,360 460,360"/>
-        <path d="M1140,400 C960,540 740,520 500,520"/>
-        <path d="M1140,400 C980,640 800,680 560,680"/>
-      </g>
-      <g class="layer-3">
-        <!-- concentric pulses -->
         <circle cx="600" cy="400" r="80"/>
         <circle cx="600" cy="400" r="140"/>
         <circle cx="600" cy="400" r="200"/>
         <circle cx="600" cy="400" r="260"/>
         <circle cx="600" cy="400" r="320"/>
         <circle cx="600" cy="400" r="380"/>
-        <!-- radial rays -->
+      </g>
+      <g class="layer-2">
         <line x1="600" y1="400" x2="600" y2="40"/>
-        <line x1="600" y1="400" x2="960" y2="100"/>
         <line x1="600" y1="400" x2="1120" y2="400"/>
-        <line x1="600" y1="400" x2="960" y2="700"/>
         <line x1="600" y1="400" x2="600" y2="760"/>
-        <line x1="600" y1="400" x2="240" y2="700"/>
         <line x1="600" y1="400" x2="80" y2="400"/>
+        <line x1="600" y1="400" x2="960" y2="100"/>
+        <line x1="600" y1="400" x2="960" y2="700"/>
         <line x1="600" y1="400" x2="240" y2="100"/>
-        <!-- more rays for density -->
+        <line x1="600" y1="400" x2="240" y2="700"/>
+      </g>
+      <g class="layer-3">
         <line x1="600" y1="400" x2="900" y2="240"/>
         <line x1="600" y1="400" x2="900" y2="560"/>
         <line x1="600" y1="400" x2="300" y2="240"/>
@@ -135,7 +106,7 @@
 
       <div class="grid">
         <section class="cta">
-          <label for="email">Get early access</label>
+          <label for="email">Be The First To Know</label>
           <form id="signup" method="POST" action="https://formspree.io/f/xgvlbkbe" novalidate>
             <div class="input">
               <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required />
@@ -147,11 +118,7 @@
         </section>
 
         <aside class="aside">
-          <ul class="bul">
-            <li>Snap-in connection</li>
-            <li>Built for cold starts</li>
-            <li>First release coming soon</li>
-          </ul>
+          <h3>Coming Winter 2025</h3>
         </aside>
       </div>
 
@@ -165,7 +132,6 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Magnetic hover for the button
     const btn = document.getElementById('notify');
     btn.addEventListener('mousemove', (e)=>{
       const r = btn.getBoundingClientRect();
@@ -174,11 +140,10 @@
       btn.style.setProperty('--x', x); btn.style.setProperty('--y', y);
     });
 
-    // Form handling
     const form = document.getElementById('signup');
     const email = document.getElementById('email');
     const statusEl = document.getElementById('status');
-    function setStatus(msg, ok){ statusEl.textContent = msg; statusEl.className = 'status ' + (ok ? 'ok' : 'err'); }
+    function setStatus(msg, ok){ statusEl.textContent = msg; statusEl.className = 'status ' + (ok ? 'ok' : 'err'); statusEl.style.display='block'; }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -188,7 +153,7 @@
       if(form.company && form.company.value){ setStatus('Hmm, try again.', false); return; }
       try{
         const resp = await fetch(form.action, { method:'POST', headers:{'Accept':'application/json'}, body:new FormData(form) });
-        if(resp.ok){ setStatus("You're on the list!", true); form.reset(); }
+        if(resp.ok){ setStatus("You're on the list! Watch your inbox soon.", true); form.reset(); }
         else { const data = await resp.json().catch(()=>null); setStatus(data?.error || 'Could not subscribe. Please try later.', false); }
       }catch(err){ setStatus('Network error. Please try again.', false); }
     });

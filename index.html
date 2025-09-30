@@ -3,13 +3,37 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>
-      <u>Scrape & Go</u> — Magnetic Ice Scraper & Stomp Pad | MagSnow LLC
-    </title>
+    <link rel="canonical" href="https://mag-snow.com/" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <title>MagSnow Scrape & Go</title>
     <meta
       name="description"
       content="The revolutionary stomp pad with integrated magnetic ice scraper. Never remove your glove to clear ice from bindings again."
     />
+    <meta property="og:title" content="MagSnow Scrape & Go" />
+    <meta
+      property="og:description"
+      content="The revolutionary stomp pad with integrated magnetic ice scraper. Never remove your glove to clear ice from bindings again."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mag-snow.com/" />
+    <meta
+      property="og:image"
+      content="/logo/Horizontal/MagSnow_Horizontal_White.png"
+    />
+    <meta property="og:site_name" content="MagSnow" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MagSnow Scrape & Go" />
+    <meta
+      name="twitter:description"
+      content="The revolutionary stomp pad with integrated magnetic ice scraper. Never remove your glove to clear ice from bindings again."
+    />
+    <meta
+      name="twitter:image"
+      content="/logo/Horizontal/MagSnow_Horizontal_White.png"
+    />
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//fonts.gstatic.com" />
     <meta name="theme-color" content="#60a5fa" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -664,6 +688,34 @@
         }
       }
     </style>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "name": "MagSnow LLC",
+            "url": "https://mag-snow.com/",
+            "logo": "https://mag-snow.com/logo/Horizontal/MagSnow_Horizontal_White.png"
+          },
+          {
+            "@type": "Product",
+            "name": "Scrape & Go",
+            "brand": {
+              "@type": "Brand",
+              "name": "MagSnow"
+            },
+            "description": "Stomp pad with integrated magnetic ice scraper to clear bindings without removing gloves.",
+            "image": "https://mag-snow.com/logo/Horizontal/MagSnow_Horizontal_White.png",
+            "url": "https://mag-snow.com/",
+            "offers": {
+              "@type": "Offer",
+              "availability": "https://schema.org/PreOrder"
+            }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <!-- Background Effects -->
@@ -671,11 +723,13 @@
 
     <!-- Navigation -->
     <nav>
-      <a href="#" class="nav-logo">
+      <a href="#" class="nav-logo" aria-label="MagSnow home">
         <img
           src="logo/Horizontal/MagSnow_Horizontal_White.png"
           alt="MagSnow LLC"
           class="logo-image"
+          loading="eager"
+          decoding="async"
         />
       </a>
     </nav>
@@ -695,10 +749,10 @@
       <p class="hero-subtitle">
         Ice accumulating on your snowboard and bindings every time you unstrap?
         <span class="hero-highlight"
-          ><u>Scrape & Go</u>'s magnetic ice scraper is always attached to your
-          stomp pad</span
-        >
-        — grab, scrape, ride. No more cold hands or iced out bindings.
+          ><u>Scrape & Go</u> is an ice scraper stays magnetically attached to
+          your stomp pad
+        </span>
+        Pop it off when you need it. No more cold hands or iced out bindings.
       </p>
     </section>
 
@@ -767,7 +821,7 @@
 
       <form
         class="signup-form"
-        id="signup"
+        id="signupForm"
         method="POST"
         action="https://formspree.io/f/xgvlbkbe"
         novalidate
@@ -810,6 +864,8 @@
           src="logo/Vertical/MagSnow_Vertical_White.png"
           alt="MagSnow LLC"
           class="footer-logo-image"
+          loading="lazy"
+          decoding="async"
         />
       </div>
       <p>&copy; <span id="year"></span> MagSnow LLC. All rights reserved.</p>
@@ -875,7 +931,7 @@
       });
 
       // Form Handling
-      const form = document.getElementById("signup");
+      const form = document.getElementById("signupForm");
       const email = document.getElementById("email");
       const statusEl = document.getElementById("status");
 
@@ -906,7 +962,7 @@
 
           if (response.ok) {
             setStatus(
-              "🎉 Welcome to the exclusive early access list! Check your email for confirmation and behind-the-scenes updates.",
+              "🎉 Welcome to the club! Check your email for behind-the-scenes updates.",
               true
             );
             form.reset();

@@ -1,712 +1,922 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MagSnow — Magnetic Ice Scraper System | Coming Soon</title>
-  <meta name="description" content="The revolutionary ice scraper that magnetically attaches to your stomp pad. Never search for your scraper again." />
-  <meta name="theme-color" content="#FF4500" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{ 
-      --primary:#FF4500; 
-      --primary-light:#FF6B35;
-      --secondary:#00D9FF;
-      --bg:#0a0a0a; 
-      --surface:#151515;
-      --txt:#ffffff; 
-      --muted:#9ca3af; 
-      --border:rgba(255,255,255,.1);
-    }
-    
-    *{box-sizing:border-box; margin:0; padding:0}
-    
-    html,body{height:100%; overflow-x:hidden}
-    
-    body{ 
-      background: radial-gradient(ellipse at 50% 20%, rgba(255,69,0,.15) 0%, transparent 50%),
-                  radial-gradient(ellipse at 80% 80%, rgba(0,217,255,.08) 0%, transparent 50%),
-                  var(--bg);
-      color:var(--txt); 
-      font-family:'Space Grotesk', sans-serif;
-      line-height:1.6;
-    }
-
-    /* ===== ANIMATED BACKGROUND ===== */
-    .particles{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
-      z-index:0;
-      pointer-events:none;
-    }
-    
-    .particle{
-      position:absolute;
-      width:2px;
-      height:2px;
-      background:rgba(255,255,255,.4);
-      border-radius:50%;
-      animation: float linear infinite;
-    }
-    
-    @keyframes float{
-      0%{ transform: translateY(100vh) translateX(0) rotate(0deg); opacity:0; }
-      10%{ opacity:1; }
-      90%{ opacity:1; }
-      100%{ transform: translateY(-100vh) translateX(100px) rotate(360deg); opacity:0; }
-    }
-
-    /* Magnetic field effect */
-    .magnet-field{
-      position:fixed;
-      top:50%;
-      left:50%;
-      width:600px;
-      height:600px;
-      margin:-300px 0 0 -300px;
-      background: radial-gradient(circle, rgba(255,69,0,.15) 0%, transparent 70%);
-      border-radius:50%;
-      animation: pulse 4s ease-in-out infinite;
-      z-index:0;
-      pointer-events:none;
-    }
-    
-    @keyframes pulse{
-      0%, 100%{ transform: scale(1); opacity:.3; }
-      50%{ transform: scale(1.2); opacity:.5; }
-    }
-
-    /* ===== NAVIGATION ===== */
-    nav{
-      position:relative;
-      z-index:100;
-      padding:24px 5%;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    
-    .nav-logo{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font:800 24px 'Syne', sans-serif;
-      color:var(--txt);
-      text-decoration:none;
-    }
-    
-    .logo-icon{
-      width:42px;
-      height:42px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius:10px;
-      display:grid;
-      place-items:center;
-      position:relative;
-      box-shadow: 0 4px 20px rgba(255,69,0,.4);
-    }
-    
-    .logo-icon::after{
-      content:"";
-      width:22px;
-      height:10px;
-      border:2.5px solid #000;
-      border-top:0;
-      background:#fff;
-      border-radius:2px 2px 8px 8px;
-      position:absolute;
-    }
-
-    /* ===== HERO SECTION ===== */
-    .hero{
-      position:relative;
-      z-index:10;
-      padding:60px 5% 80px;
-      text-align:center;
-      max-width:1200px;
-      margin:0 auto;
-    }
-    
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 20px;
-      background:rgba(255,69,0,.1);
-      border:1px solid rgba(255,69,0,.3);
-      border-radius:100px;
-      font:600 13px 'Space Grotesk';
-      color:var(--primary);
-      letter-spacing:.5px;
-      text-transform:uppercase;
-      margin-bottom:32px;
-      animation: fadeSlideDown .8s ease;
-    }
-    
-    .badge-dot{
-      width:8px;
-      height:8px;
-      background:var(--primary);
-      border-radius:50%;
-      animation: blink 2s ease infinite;
-    }
-    
-    @keyframes blink{
-      0%, 100%{ opacity:1; }
-      50%{ opacity:.3; }
-    }
-    
-    @keyframes fadeSlideDown{
-      from{ opacity:0; transform:translateY(-20px); }
-      to{ opacity:1; transform:translateY(0); }
-    }
-    
-    h1{
-      font:800 clamp(42px, 8vw, 86px)/1.1 'Syne', sans-serif;
-      background: linear-gradient(135deg, #fff 0%, #e0e0e0 50%, #fff 100%);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-      margin-bottom:24px;
-      animation: fadeSlideUp .8s ease .2s both;
-      letter-spacing:-.02em;
-    }
-    
-    @keyframes fadeSlideUp{
-      from{ opacity:0; transform:translateY(30px); }
-      to{ opacity:1; transform:translateY(0); }
-    }
-    
-    .hero-subtitle{
-      font:600 clamp(18px, 3vw, 24px)/1.5 'Space Grotesk';
-      color:var(--muted);
-      max-width:680px;
-      margin:0 auto 48px;
-      animation: fadeSlideUp .8s ease .4s both;
-    }
-    
-    .hero-highlight{
-      color:var(--secondary);
-      font-weight:700;
-    }
-
-    /* ===== PRODUCT VISUAL ===== */
-    .product-showcase{
-      position:relative;
-      max-width:800px;
-      margin:0 auto 80px;
-      padding:80px 40px;
-      animation: fadeSlideUp .8s ease .6s both;
-    }
-    
-    .magnet-demo{
-      position:relative;
-      width:100%;
-      max-width:500px;
-      margin:0 auto;
-      aspect-ratio:1;
-    }
-    
-    .stomp-pad{
-      position:absolute;
-      top:50%;
-      left:50%;
-      width:200px;
-      height:200px;
-      margin:-100px 0 0 -100px;
-      background: linear-gradient(135deg, var(--surface) 0%, #1f1f1f 100%);
-      border-radius:20px;
-      border:2px solid var(--border);
-      display:grid;
-      place-items:center;
-      box-shadow: 0 20px 60px rgba(0,0,0,.5);
-    }
-    
-    .stomp-texture{
-      display:grid;
-      grid-template-columns:repeat(3, 1fr);
-      gap:12px;
-      padding:20px;
-    }
-    
-    .stomp-dot{
-      width:20px;
-      height:20px;
-      background:rgba(255,255,255,.05);
-      border-radius:50%;
-    }
-    
-    .scraper{
-      position:absolute;
-      top:50%;
-      left:50%;
-      width:140px;
-      height:80px;
-      margin:-40px 0 0 -70px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius:12px 12px 60px 60px;
-      box-shadow: 0 10px 40px rgba(255,69,0,.6),
-                  inset 0 -2px 8px rgba(0,0,0,.3);
-      animation: magnetPull 3s ease-in-out infinite;
-      z-index:10;
-    }
-    
-    .scraper::before{
-      content:"CLICK";
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%, -50%);
-      font:700 12px 'Space Grotesk';
-      letter-spacing:2px;
-      color:rgba(0,0,0,.4);
-    }
-    
-    .scraper::after{
-      content:"";
-      position:absolute;
-      bottom:8px;
-      left:50%;
-      transform:translateX(-50%);
-      width:100px;
-      height:6px;
-      background:rgba(0,0,0,.2);
-      border-radius:3px;
-    }
-    
-    @keyframes magnetPull{
-      0%, 100%{ transform:translateY(-120px) scale(.95); }
-      50%{ transform:translateY(0) scale(1); }
-    }
-    
-    .magnetic-lines{
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%, -50%);
-      width:120%;
-      height:120%;
-      pointer-events:none;
-    }
-    
-    .mag-line{
-      position:absolute;
-      top:50%;
-      left:50%;
-      width:2px;
-      height:60px;
-      background: linear-gradient(180deg, var(--secondary) 0%, transparent 100%);
-      transform-origin:center top;
-      opacity:.6;
-      animation: magneticPulse 2s ease-in-out infinite;
-    }
-    
-    .mag-line:nth-child(1){ transform:translate(-50%, -50%) rotate(0deg); animation-delay:0s; }
-    .mag-line:nth-child(2){ transform:translate(-50%, -50%) rotate(45deg); animation-delay:.2s; }
-    .mag-line:nth-child(3){ transform:translate(-50%, -50%) rotate(90deg); animation-delay:.4s; }
-    .mag-line:nth-child(4){ transform:translate(-50%, -50%) rotate(135deg); animation-delay:.6s; }
-    .mag-line:nth-child(5){ transform:translate(-50%, -50%) rotate(180deg); animation-delay:.8s; }
-    .mag-line:nth-child(6){ transform:translate(-50%, -50%) rotate(225deg); animation-delay:1s; }
-    .mag-line:nth-child(7){ transform:translate(-50%, -50%) rotate(270deg); animation-delay:1.2s; }
-    .mag-line:nth-child(8){ transform:translate(-50%, -50%) rotate(315deg); animation-delay:1.4s; }
-    
-    @keyframes magneticPulse{
-      0%, 100%{ opacity:0; height:40px; }
-      50%{ opacity:.8; height:80px; }
-    }
-
-    /* ===== FEATURES ===== */
-    .features{
-      position:relative;
-      z-index:10;
-      max-width:1200px;
-      margin:0 auto;
-      padding:0 5% 80px;
-      display:grid;
-      grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-      gap:32px;
-    }
-    
-    .feature-card{
-      background: linear-gradient(135deg, rgba(255,255,255,.03) 0%, rgba(255,255,255,.01) 100%);
-      border:1px solid var(--border);
-      border-radius:24px;
-      padding:36px;
-      transition: all .3s ease;
-      position:relative;
-      overflow:hidden;
-    }
-    
-    .feature-card::before{
-      content:"";
-      position:absolute;
-      top:0;
-      left:0;
-      right:0;
-      height:3px;
-      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
-      transform:scaleX(0);
-      transform-origin:left;
-      transition: transform .4s ease;
-    }
-    
-    .feature-card:hover::before{
-      transform:scaleX(1);
-    }
-    
-    .feature-card:hover{
-      transform:translateY(-8px);
-      border-color:rgba(255,255,255,.2);
-      box-shadow: 0 20px 60px rgba(255,69,0,.2);
-    }
-    
-    .feature-icon{
-      width:56px;
-      height:56px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      font-size:28px;
-      margin-bottom:20px;
-      box-shadow: 0 8px 24px rgba(255,69,0,.3);
-    }
-    
-    .feature-card h3{
-      font:700 22px 'Syne';
-      margin-bottom:12px;
-      color:var(--txt);
-    }
-    
-    .feature-card p{
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.7;
-    }
-
-    /* ===== CTA SECTION ===== */
-    .cta-section{
-      position:relative;
-      z-index:10;
-      max-width:700px;
-      margin:0 auto 100px;
-      padding:60px 5%;
-      text-align:center;
-    }
-    
-    .cta-section h2{
-      font:800 clamp(32px, 6vw, 48px)/1.2 'Syne';
-      margin-bottom:16px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-      background-clip:text;
-    }
-    
-    .cta-section p{
-      color:var(--muted);
-      font-size:18px;
-      margin-bottom:40px;
-    }
-    
-    .signup-form{
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-      max-width:500px;
-      margin:0 auto;
-    }
-    
-    .input-group{
-      position:relative;
-    }
-    
-    .email-input{
-      width:100%;
-      padding:20px 24px;
-      font:600 16px 'Space Grotesk';
-      background:rgba(255,255,255,.05);
-      border:2px solid var(--border);
-      border-radius:16px;
-      color:var(--txt);
-      transition: all .3s ease;
-      outline:none;
-    }
-    
-    .email-input:focus{
-      border-color:var(--primary);
-      background:rgba(255,255,255,.08);
-      box-shadow: 0 0 0 4px rgba(255,69,0,.1);
-    }
-    
-    .email-input::placeholder{
-      color:var(--muted);
-    }
-    
-    .submit-btn{
-      width:100%;
-      padding:20px 24px;
-      font:700 16px 'Syne';
-      letter-spacing:1px;
-      text-transform:uppercase;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-      border:0;
-      border-radius:16px;
-      color:#fff;
-      cursor:pointer;
-      transition: all .3s ease;
-      box-shadow: 0 12px 32px rgba(255,69,0,.4);
-      position:relative;
-      overflow:hidden;
-    }
-    
-    .submit-btn::before{
-      content:"";
-      position:absolute;
-      top:0;
-      left:-100%;
-      width:100%;
-      height:100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
-      transition: left .5s ease;
-    }
-    
-    .submit-btn:hover::before{
-      left:100%;
-    }
-    
-    .submit-btn:hover{
-      transform:translateY(-2px);
-      box-shadow: 0 16px 40px rgba(255,69,0,.5);
-    }
-    
-    .submit-btn:active{
-      transform:translateY(0);
-    }
-    
-    .hp{position:absolute; left:-9999px;}
-    
-    .status{
-      padding:16px;
-      border-radius:12px;
-      text-align:center;
-      font:600 15px 'Space Grotesk';
-      display:none;
-    }
-    
-    .status.ok{
-      display:block;
-      background:rgba(16,185,129,.1);
-      border:1px solid rgba(16,185,129,.3);
-      color:#10b981;
-    }
-    
-    .status.err{
-      display:block;
-      background:rgba(239,68,68,.1);
-      border:1px solid rgba(239,68,68,.3);
-      color:#ef4444;
-    }
-
-    /* ===== FOOTER ===== */
-    footer{
-      position:relative;
-      z-index:10;
-      padding:40px 5%;
-      border-top:1px solid var(--border);
-      text-align:center;
-      color:var(--muted);
-      font-size:14px;
-    }
-    
-    footer a{
-      color:var(--muted);
-      text-decoration:none;
-      transition: color .3s ease;
-    }
-    
-    footer a:hover{
-      color:var(--txt);
-    }
-
-    @media (max-width: 768px){
-      .features{
-        grid-template-columns:1fr;
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      <u>Scrape & Go</u> — Magnetic Ice Scraper & Stomp Pad | MagSnow LLC
+    </title>
+    <meta
+      name="description"
+      content="The revolutionary stomp pad with integrated magnetic ice scraper. Never remove your glove to clear ice from bindings again."
+    />
+    <meta name="theme-color" content="#60a5fa" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary: #60a5fa;
+        --primary-light: #93c5fd;
+        --secondary: #e0f2fe;
+        --bg: #0a0a0a;
+        --surface: #111111;
+        --txt: #ffffff;
+        --muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.1);
       }
-      
-      .signup-form{
-        flex-direction:column;
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
       }
-    }
-  </style>
-</head>
-<body>
-  <!-- Background Effects -->
-  <div class="particles" id="particles"></div>
-  <div class="magnet-field"></div>
 
-  <!-- Navigation -->
-  <nav>
-    <a href="#" class="nav-logo">
-      <div class="logo-icon"></div>
-      <span>MagSnow</span>
-    </a>
-  </nav>
+      html,
+      body {
+        height: 100%;
+        overflow-x: hidden;
+      }
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="badge">
-      <span class="badge-dot"></span>
-      Coming Winter 2025
-    </div>
-    
-    <h1>The Scraper That<br>Never Gets Lost</h1>
-    
-    <p class="hero-subtitle">
-      Tired of digging through pockets? <span class="hero-highlight">MagSnow magnetically snaps to your stomp pad</span> — always there, always ready. Click. Ride. Scrape.
-    </p>
-  </section>
+      body {
+        background: radial-gradient(
+            ellipse at 50% 20%,
+            rgba(96, 165, 250, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 80%,
+            rgba(224, 242, 254, 0.08) 0%,
+            transparent 50%
+          ),
+          var(--bg);
+        color: var(--txt);
+        font-family: "Space Grotesk", sans-serif;
+        line-height: 1.6;
+      }
 
-  <!-- Product Showcase -->
-  <div class="product-showcase">
-    <div class="magnet-demo">
-      <div class="magnetic-lines">
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
-        <div class="mag-line"></div>
+      /* ===== ANIMATED BACKGROUND ===== */
+      .particles {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: float linear infinite;
+      }
+
+      .particle:nth-child(odd) {
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      .particle:nth-child(3n) {
+        width: 1px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(-100vh) translateX(0) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) translateX(100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* ===== NAVIGATION ===== */
+      nav {
+        position: relative;
+        z-index: 100;
+        padding: 24px 5%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+      }
+
+      .logo-image {
+        height: 42px;
+        width: auto;
+        transition: all 0.3s ease;
+      }
+
+      .logo-image:hover {
+        transform: scale(1.05);
+      }
+
+      /* ===== HERO SECTION ===== */
+      .hero {
+        position: relative;
+        z-index: 10;
+        padding: 60px 5% 80px;
+        text-align: center;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        background: rgba(96, 165, 250, 0.1);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 100px;
+        font: 600 13px "Space Grotesk";
+        color: var(--primary);
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 32px;
+        animation: fadeSlideDown 0.8s ease;
+      }
+
+      .badge-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--primary);
+        border-radius: 50%;
+        animation: blink 2s ease infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      @keyframes fadeSlideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h1 {
+        font: 800 clamp(42px, 8vw, 86px) / 1.1 "Syne", sans-serif;
+        background: linear-gradient(135deg, #fff 0%, #e0e0e0 50%, #fff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 24px;
+        animation: fadeSlideUp 0.8s ease 0.2s both;
+        letter-spacing: -0.02em;
+      }
+
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .hero-subtitle {
+        font: 600 clamp(18px, 3vw, 24px) / 1.5 "Space Grotesk";
+        color: var(--muted);
+        max-width: 680px;
+        margin: 0 auto 48px;
+        animation: fadeSlideUp 0.8s ease 0.4s both;
+      }
+
+      .hero-highlight {
+        color: var(--secondary);
+        font-weight: 700;
+      }
+
+      .hero-tagline {
+        font: 600 18px "Space Grotesk";
+        color: var(--primary);
+        margin-bottom: 16px;
+        animation: fadeSlideUp 0.8s ease 0.3s both;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* ===== CREDIBILITY ===== */
+      .credibility {
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        margin: 0 auto 40px;
+        padding: 0 5%;
+      }
+
+      .credibility-content {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+      }
+
+      .patent-badge,
+      .tested-badge,
+      .exclusive-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50px;
+        font: 600 14px "Space Grotesk";
+        color: var(--txt);
+        transition: all 0.3s ease;
+      }
+
+      .patent-badge {
+        border-color: rgba(255, 69, 0, 0.3);
+        background: rgba(255, 69, 0, 0.1);
+      }
+
+      .tested-badge {
+        border-color: rgba(0, 217, 255, 0.3);
+        background: rgba(0, 217, 255, 0.1);
+      }
+
+      .exclusive-badge {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .patent-icon,
+      .tested-icon,
+      .exclusive-icon {
+        font-size: 16px;
+      }
+
+      @media (max-width: 768px) {
+        .credibility-content {
+          flex-direction: column;
+          align-items: center;
+          gap: 16px;
+        }
+      }
+
+      /* ===== FEATURES ===== */
+      .features {
+        position: relative;
+        z-index: 10;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 5% 80px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 32px;
+      }
+
+      .feature-card {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.03) 0%,
+          rgba(255, 255, 255, 0.01) 100%
+        );
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 36px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+      }
+
+      .feature-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        width: 56px;
+        height: 56px;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 28px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-card h3 {
+        font: 700 22px "Syne";
+        margin-bottom: 12px;
+        color: var(--txt);
+      }
+
+      .feature-card p {
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      /* ===== CTA SECTION ===== */
+      .cta-section {
+        position: relative;
+        z-index: 10;
+        max-width: 700px;
+        margin: 0 auto 100px;
+        padding: 60px 5%;
+        text-align: center;
+      }
+
+      .cta-section h2 {
+        font: 800 clamp(32px, 6vw, 48px) / 1.2 "Syne";
+        margin-bottom: 16px;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--secondary) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .cta-section p {
+        color: var(--muted);
+        font-size: 18px;
+        margin-bottom: 24px;
+      }
+
+      .urgency-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background: rgba(96, 165, 250, 0.1);
+        border: 1px solid rgba(96, 165, 250, 0.3);
+        border-radius: 50px;
+        font: 600 14px "Space Grotesk";
+        color: var(--primary);
+        margin-bottom: 40px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .urgency-icon {
+        font-size: 16px;
+      }
+
+      .signup-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      .input-group {
+        position: relative;
+      }
+
+      .email-input {
+        width: 100%;
+        padding: 20px 24px;
+        font: 600 16px "Space Grotesk";
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid var(--border);
+        border-radius: 16px;
+        color: var(--txt);
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .email-input:focus {
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+      }
+
+      .email-input::placeholder {
+        color: var(--muted);
+      }
+
+      .submit-btn {
+        width: 100%;
+        padding: 20px 24px;
+        font: 700 16px "Syne";
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-light) 100%
+        );
+        border: 0;
+        border-radius: 16px;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .submit-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.5s ease;
+      }
+
+      .submit-btn:hover::before {
+        left: 100%;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+
+      .hp {
+        position: absolute;
+        left: -9999px;
+      }
+
+      .status {
+        padding: 16px;
+        border-radius: 12px;
+        text-align: center;
+        font: 600 15px "Space Grotesk";
+        display: none;
+      }
+
+      .status.ok {
+        display: block;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #10b981;
+      }
+
+      .status.err {
+        display: block;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #ef4444;
+      }
+
+      /* ===== FOOTER ===== */
+      footer {
+        position: relative;
+        z-index: 10;
+        padding: 60px 5% 40px;
+        border-top: 1px solid var(--border);
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .footer-logo {
+        margin-bottom: 24px;
+      }
+
+      .footer-logo-image {
+        height: 60px;
+        width: auto;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+      }
+
+      .footer-logo-image:hover {
+        opacity: 1;
+      }
+
+      footer a {
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      footer a:hover {
+        color: var(--txt);
+      }
+
+      /* ===== STICKY CTA ===== */
+      .sticky-cta {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(100px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      .sticky-cta.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: all;
+      }
+
+      .sticky-btn {
+        padding: 16px 24px;
+        font: 700 14px "Syne";
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        background: linear-gradient(
+          135deg,
+          var(--primary) 0%,
+          var(--primary-light) 100%
+        );
+        border: 0;
+        border-radius: 50px;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(255, 69, 0, 0.4);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .sticky-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 32px rgba(255, 69, 0, 0.5);
+      }
+
+      .sticky-btn:active {
+        transform: translateY(0);
+      }
+
+      /* ===== SCROLL ANIMATIONS ===== */
+      .fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+      }
+
+      .fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .slide-in-left {
+        opacity: 0;
+        transform: translateX(-50px);
+        transition: all 0.6s ease;
+      }
+
+      .slide-in-left.visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .slide-in-right {
+        opacity: 0;
+        transform: translateX(50px);
+        transition: all 0.6s ease;
+      }
+
+      .slide-in-right.visible {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      @media (max-width: 768px) {
+        .features {
+          grid-template-columns: 1fr;
+        }
+
+        .signup-form {
+          flex-direction: column;
+        }
+
+        .sticky-cta {
+          bottom: 15px;
+          right: 15px;
+        }
+
+        .sticky-btn {
+          padding: 14px 20px;
+          font-size: 13px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Effects -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+      <a href="#" class="nav-logo">
+        <img
+          src="logo/Horizontal/MagSnow_Horizontal_White.png"
+          alt="MagSnow LLC"
+          class="logo-image"
+        />
+      </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Exclusive Early Access - Winter 2025
       </div>
-      
-      <div class="stomp-pad">
-        <div class="stomp-texture">
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
-          <div class="stomp-dot"></div>
+
+      <h1>Say Goodbye <br />To Iced Out Bindings</h1>
+      <p class="hero-tagline">
+        The world's first magnetic ice scraper & stomp pad
+      </p>
+
+      <p class="hero-subtitle">
+        Ice accumulating on your snowboard and bindings every time you unstrap?
+        <span class="hero-highlight"
+          ><u>Scrape & Go</u>'s magnetic ice scraper is always attached to your
+          stomp pad</span
+        >
+        — grab, scrape, ride. No more cold hands or iced out bindings.
+      </p>
+    </section>
+
+    <!-- Credibility Section -->
+    <section class="credibility fade-in">
+      <div class="credibility-content">
+        <div class="patent-badge">
+          <span class="patent-icon">⚡</span>
+          <span>Patent Pending Innovation</span>
+        </div>
+        <div class="tested-badge">
+          <span class="tested-icon">🏔️</span>
+          <span>Mountain-Tested by Our Team</span>
+        </div>
+        <div class="exclusive-badge">
+          <span class="exclusive-icon">🏂</span>
+          <span>Snowboarding's Newest Accessory</span>
         </div>
       </div>
-      
-      <div class="scraper"></div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Features -->
-  <section class="features">
-    <div class="feature-card">
-      <div class="feature-icon">🧲</div>
-      <h3>Magnetic Integration</h3>
-      <p>Industrial-strength magnets lock your scraper securely to the stomp pad. No clips, no straps, just pure magnetic power.</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <h3>One-Hand Release</h3>
-      <p>Quick-release design means you can grab and scrape with one hand. Back on your board in seconds.</p>
-    </div>
-    
-    <div class="feature-card">
-      <div class="feature-icon">🏔️</div>
-      <h3>Ride-Ready Design</h3>
-      <p>Low-profile scraper stays flat against your stomp pad. Zero interference with your stance or style.</p>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="cta-section">
-    <h2>Never Search Again</h2>
-    <p>Join the list for exclusive early access and launch day discounts.</p>
-    
-    <form class="signup-form" id="signup" method="POST" action="https://formspree.io/f/xgvlbkbe" novalidate>
-      <div class="input-group">
-        <input 
-          type="email" 
-          name="email" 
-          id="email" 
-          class="email-input" 
-          placeholder="Enter your email"
-          inputmode="email"
-          autocomplete="email"
-          required
-        />
-        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" />
+    <!-- Features -->
+    <section class="features fade-in">
+      <div class="feature-card slide-in-left">
+        <div class="feature-icon">🧲</div>
+        <h3>Magnetic Integration</h3>
+        <p>
+          <strong>Magnetic snap-on technology</strong> keeps your ice scraper
+          instantly accessible. Patent-pending design tested by our team of
+          riders—never lose your scraper again.
+        </p>
       </div>
-      <button type="submit" class="submit-btn">Get Early Access</button>
-      <div id="status" class="status" role="status" aria-live="polite"></div>
-    </form>
-  </section>
 
-  <!-- Footer -->
-  <footer>
-    <p>&copy; <span id="year"></span> MagSnow. All rights reserved.</p>
-  </footer>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">❄️</div>
+        <h3>Stop Ice Buildup</h3>
+        <p>
+          Ice accumulates in your bindings every time you unstrap for walking or
+          getting on the lift. Clear it instantly without removing your gloves
+          or stopping your flow.
+        </p>
+      </div>
 
-  <script>
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
+      <div class="feature-card slide-in-right">
+        <div class="feature-icon">🔥</div>
+        <h3>Stay Warm</h3>
+        <p>
+          Clear ice from your bindings without removing your gloves. Stay warm
+          and comfortable while keeping your bindings ice-free.
+        </p>
+      </div>
+    </section>
 
-    // Floating Particles
-    const particlesContainer = document.getElementById('particles');
-    for(let i = 0; i < 40; i++){
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-      particle.style.animationDelay = Math.random() * 5 + 's';
-      particlesContainer.appendChild(particle);
-    }
+    <!-- Early Access CTA -->
+    <section class="cta-section fade-in" id="signup">
+      <h2>Get Exclusive Early Access</h2>
+      <p>
+        Be among the first to experience the future of snowboarding. Join our
+        exclusive list for early access, behind-the-scenes updates, and special
+        launch day privileges.
+      </p>
+      <div class="urgency-note">
+        <span class="urgency-icon">⚡</span>
+        Limited spots available for early access
+      </div>
 
-    // Form Handling
-    const form = document.getElementById('signup');
-    const email = document.getElementById('email');
-    const statusEl = document.getElementById('status');
-    
-    function setStatus(msg, ok){
-      statusEl.textContent = msg;
-      statusEl.className = 'status ' + (ok ? 'ok' : 'err');
-    }
+      <form
+        class="signup-form"
+        id="signup"
+        method="POST"
+        action="https://formspree.io/f/xgvlbkbe"
+        novalidate
+      >
+        <div class="input-group">
+          <input
+            type="email"
+            name="email"
+            id="email"
+            class="email-input"
+            placeholder="Enter your email"
+            inputmode="email"
+            autocomplete="email"
+            required
+          />
+          <input
+            class="hp"
+            type="text"
+            name="company"
+            tabindex="-1"
+            autocomplete="off"
+          />
+        </div>
+        <button type="submit" class="submit-btn">
+          Join Exclusive Early Access
+        </button>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+      </form>
+    </section>
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const emailValue = email.value.trim();
-      const emailRegex = /.+@.+\..+/;
-      
-      if(!emailRegex.test(emailValue)){
-        setStatus('Please enter a valid email address', false);
-        return;
+    <!-- Sticky CTA -->
+    <div class="sticky-cta" id="stickyCta">
+      <a href="#signup" class="sticky-btn">Get Early Access</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-logo">
+        <img
+          src="logo/Vertical/MagSnow_Vertical_White.png"
+          alt="MagSnow LLC"
+          class="footer-logo-image"
+        />
+      </div>
+      <p>&copy; <span id="year"></span> MagSnow LLC. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // Year
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Floating Particles (Snow Effect)
+      const particlesContainer = document.getElementById("particles");
+      for (let i = 0; i < 80; i++) {
+        const particle = document.createElement("div");
+        particle.className = "particle";
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.animationDuration = Math.random() * 20 + 15 + "s";
+        particle.style.animationDelay = Math.random() * 10 + "s";
+        particle.style.opacity = Math.random() * 0.5 + 0.3;
+        particlesContainer.appendChild(particle);
       }
 
-      const formData = new FormData(form);
-      
-      try {
-        const response = await fetch(form.action, {
-          method: 'POST',
-          body: formData,
-          headers: { 'Accept': 'application/json' }
+      // Scroll Animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      }, observerOptions);
+
+      // Observe all elements with animation classes
+      document
+        .querySelectorAll(".fade-in, .slide-in-left, .slide-in-right")
+        .forEach((el) => {
+          observer.observe(el);
         });
 
-        if(response.ok){
-          setStatus('🎉 You\'re on the list! Check your email for confirmation.', true);
-          form.reset();
+      // Sticky CTA
+      const stickyCta = document.getElementById("stickyCta");
+      const ctaSection = document.getElementById("signup");
+
+      window.addEventListener("scroll", () => {
+        const ctaRect = ctaSection.getBoundingClientRect();
+        const isCtaVisible =
+          ctaRect.top < window.innerHeight && ctaRect.bottom > 0;
+
+        if (isCtaVisible) {
+          stickyCta.classList.remove("visible");
         } else {
-          setStatus('Something went wrong. Please try again.', false);
+          stickyCta.classList.add("visible");
         }
-      } catch(error){
-        setStatus('Connection error. Please try again.', false);
+      });
+
+      // Smooth scroll for sticky CTA
+      document.querySelector(".sticky-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        ctaSection.scrollIntoView({ behavior: "smooth" });
+      });
+
+      // Form Handling
+      const form = document.getElementById("signup");
+      const email = document.getElementById("email");
+      const statusEl = document.getElementById("status");
+
+      function setStatus(msg, ok) {
+        statusEl.textContent = msg;
+        statusEl.className = "status " + (ok ? "ok" : "err");
       }
-    });
-  </script>
-</body>
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const emailValue = email.value.trim();
+        const emailRegex = /.+@.+\..+/;
+
+        if (!emailRegex.test(emailValue)) {
+          setStatus("Please enter a valid email address", false);
+          return;
+        }
+
+        const formData = new FormData(form);
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            body: formData,
+            headers: { Accept: "application/json" },
+          });
+
+          if (response.ok) {
+            setStatus(
+              "🎉 Welcome to the exclusive early access list! Check your email for confirmation and behind-the-scenes updates.",
+              true
+            );
+            form.reset();
+          } else {
+            setStatus("Something went wrong. Please try again.", false);
+          }
+        } catch (error) {
+          setStatus("Connection error. Please try again.", false);
+        }
+      });
+    </script>
+  </body>
 </html>

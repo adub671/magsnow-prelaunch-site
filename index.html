@@ -506,47 +506,25 @@
       }
 
       .status {
-        padding: 20px;
-        border-radius: 16px;
+        padding: 16px;
+        border-radius: 12px;
         text-align: center;
-        font: 600 16px "Space Grotesk";
+        font: 600 15px "Space Grotesk";
         display: none;
-        margin-top: 16px;
-        animation: slideInUp 0.4s ease;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
 
       .status.ok {
         display: block;
-        background: linear-gradient(
-          135deg,
-          rgba(16, 185, 129, 0.15) 0%,
-          rgba(16, 185, 129, 0.05) 100%
-        );
-        border: 2px solid rgba(16, 185, 129, 0.4);
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
         color: #10b981;
       }
 
       .status.err {
         display: block;
-        background: linear-gradient(
-          135deg,
-          rgba(239, 68, 68, 0.15) 0%,
-          rgba(239, 68, 68, 0.05) 100%
-        );
-        border: 2px solid rgba(239, 68, 68, 0.4);
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
         color: #ef4444;
-      }
-
-      @keyframes slideInUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
       }
 
       /* ===== FOOTER ===== */
@@ -775,7 +753,7 @@
     </section>
 
     <!-- Early Access CTA -->
-    <section class="cta-section fade-in" id="signup-section">
+    <section class="cta-section fade-in" id="signup">
       <h2>Get Exclusive Early Access</h2>
       <p>
         Be among the first to experience the future of snowboarding. Join our
@@ -789,7 +767,7 @@
 
       <form
         class="signup-form"
-        id="signup-form"
+        id="signup"
         method="POST"
         action="https://formspree.io/f/xgvlbkbe"
         novalidate
@@ -822,7 +800,7 @@
 
     <!-- Sticky CTA -->
     <div class="sticky-cta" id="stickyCta">
-      <a href="#signup-section" class="sticky-btn">Get Early Access</a>
+      <a href="#signup" class="sticky-btn">Get Early Access</a>
     </div>
 
     <!-- Footer -->
@@ -876,7 +854,7 @@
 
       // Sticky CTA
       const stickyCta = document.getElementById("stickyCta");
-      const ctaSection = document.getElementById("signup-section");
+      const ctaSection = document.getElementById("signup");
 
       window.addEventListener("scroll", () => {
         const ctaRect = ctaSection.getBoundingClientRect();
@@ -897,60 +875,26 @@
       });
 
       // Form Handling
-      const form = document.getElementById("signup-form");
+      const form = document.getElementById("signup");
       const email = document.getElementById("email");
       const statusEl = document.getElementById("status");
-      const submitBtn = document.querySelector(".submit-btn");
-
-      // Debug: Check if elements are found
-      console.log("Form element:", form);
-      console.log("Email element:", email);
-      console.log("Status element:", statusEl);
-      console.log("Submit button:", submitBtn);
-
-      if (!form || !email || !statusEl || !submitBtn) {
-        console.error("Form elements not found!");
-        return;
-      }
 
       function setStatus(msg, ok) {
         statusEl.textContent = msg;
         statusEl.className = "status " + (ok ? "ok" : "err");
-
-        // Scroll to status message for better visibility
-        setTimeout(() => {
-          statusEl.scrollIntoView({ behavior: "smooth", block: "center" });
-        }, 100);
-      }
-
-      function setLoading(loading) {
-        if (loading) {
-          submitBtn.textContent = "Joining...";
-          submitBtn.disabled = true;
-          submitBtn.style.opacity = "0.7";
-        } else {
-          submitBtn.textContent = "Join Exclusive Early Access";
-          submitBtn.disabled = false;
-          submitBtn.style.opacity = "1";
-        }
       }
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
         const emailValue = email.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-        // Clear any previous status messages
-        statusEl.className = "status";
-        statusEl.textContent = "";
+        const emailRegex = /.+@.+\..+/;
 
         if (!emailRegex.test(emailValue)) {
           setStatus("Please enter a valid email address", false);
           return;
         }
 
-        setLoading(true);
         const formData = new FormData(form);
 
         try {
@@ -960,37 +904,17 @@
             headers: { Accept: "application/json" },
           });
 
-          // Formspree returns 302 redirect on success, so we check for that or 200
-          if (response.ok || response.status === 302) {
+          if (response.ok) {
             setStatus(
               "🎉 Welcome to the exclusive early access list! Check your email for confirmation and behind-the-scenes updates.",
               true
             );
             form.reset();
-
-            // Hide the form after successful submission
-            setTimeout(() => {
-              form.style.display = "none";
-              const ctaSection = document.querySelector(".cta-section");
-              ctaSection.innerHTML = `
-                <div style="text-align: center; padding: 40px 0;">
-                  <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
-                  <h2 style="font: 800 clamp(32px, 6vw, 48px) / 1.2 'Syne'; margin-bottom: 16px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">You're In!</h2>
-                  <p style="color: var(--muted); font-size: 18px; margin-bottom: 24px;">Thank you for joining our exclusive early access list. We'll be in touch soon with updates about the Scrape & Go launch!</p>
-                  <div style="padding: 20px; border-radius: 16px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%); border: 2px solid rgba(16, 185, 129, 0.4); color: #10b981; font: 600 16px 'Space Grotesk';">
-                    Check your email for confirmation and behind-the-scenes updates.
-                  </div>
-                </div>
-              `;
-            }, 2000);
           } else {
             setStatus("Something went wrong. Please try again.", false);
           }
         } catch (error) {
-          console.error("Form submission error:", error);
           setStatus("Connection error. Please try again.", false);
-        } finally {
-          setLoading(false);
         }
       });
     </script>
